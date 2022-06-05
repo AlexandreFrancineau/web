@@ -1,3 +1,4 @@
+from numbers import Number
 from flask import Flask, request
 from answers import Answer
 import jwt_utils
@@ -30,6 +31,9 @@ def PostQuestion():
             question = jsonToQuestion(payload)
             dbmanagement.insertQuestion(question)
             answers = payload['possibleAnswers']
+            # for id, a in enumerate(answers):
+            #     if isinstance(answers[a], str):
+            #         answers[a] = answers[a].replace("'", "''")
             for answ in answers:
                 answ= Answer(answ["text"],answ["isCorrect"],question.id)
                 dbmanagement.insertAnswers(answ)
@@ -63,15 +67,18 @@ def GetQuestion(position):
         return{"message":"try a échoué"},401
 
 def UpdateQuestion(position):
-    # try:
-    if request.headers.get('Authorization'):
-        question = dbmanagement.getQuestion(position)
-        payload=request.get_json()
-        question = jsonToQuestion(payload)
-        dbmanagement.updateQuestion(position,question,len(payload['possibleAnswers']))
-        return questionToJson(question)
-    else:
-        return {"message":f"pas réussi à update la question avec la position {position}","error":"404"},404
+    try:
+        if request.headers.get('Authorization'):
+            question = dbmanagement.getQuestion(position)
+            payload=request.get_json()
+            question = jsonToQuestion(payload)
+            dbmanagement.updateQuestion(position,question,len(payload['possibleAnswers']))
+            return questionToJson(question)
+        else:
+            return {"message":f"pas réussi à update la question avec la position {position}","error":"404"},404
 
-    # except:
-        # return{"message":"try a échoué"},401
+    except:
+        return{"message":"try a échoué"},401
+
+def GetNumberOfQuestion():
+    return str(dbmanagement.NumberOfQuestion()),200

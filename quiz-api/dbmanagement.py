@@ -38,6 +38,7 @@ def insertAnswers(answers: answers.Answer ):
     db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
+    answers.text = answers.text.replace("'", "''")
     cur.execute("begin")
     querySql = (
             f"INSERT INTO Answers (text,isCorrect,questionId) VALUES"
@@ -45,6 +46,7 @@ def insertAnswers(answers: answers.Answer ):
         )
     cur.execute(querySql)
     cur.execute("commit")
+    
 
 def deleteQuestion(position):
     db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
@@ -139,18 +141,23 @@ def updateQuestion(position,questionUpdated: questions.Question,length):
         cur.execute(querySql_all)
     
 
-    # if int(position) == questionUpdated.position:
-    #     print("dedans")
-    #     querySelectAnswers= f""" SELECT id FROM Questions WHERE position = {position}"""
-    #     id = cur.execute(querySelectAnswers)
-    #     idQ = id.fetchone()[0]
-    #     print(idQ)
-    #     if( length < idQ):
-    #         queryDelete = f"""DELETE FROM Answers WHERE id=(SELECT MAX(id) FROM Answers WHERE answers.questionId = questions.id)"""
-    #         cur.execute(queryDelete)
-            
-    # else:
-    #     cur_del=cur.execute(querySql_all)
+def NumberOfQuestion():
+    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection.isolation_level = None
+    cur = db_connection.cursor()
+
+    try:
+
+        question_data = """SELECT COUNT (*) FROM Questions"""
+        count= cur.execute(question_data)
+        count2= cur.fetchone()[0]
+        print(count2)
+        return count2
+
+    except Exception as e:
+        print("exception")
+        db_connection.close()
+        raise RuntimeError(str(e))
     
 
     
