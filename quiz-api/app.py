@@ -38,5 +38,13 @@ def UpdateQuestion(position):
 def GetNumberOfQuestion():
 	return functions.GetNumberOfQuestion()
 
+@app.route('/participations',methods=['POST'])
+def PostParticipants():
+	return functions.PostParticipants()
+
+@app.route('/participations', methods=['DELETE'])
+def DeleteParticipants():
+	return functions.DelAllParticipants()
+
 if __name__ == "__main__":
     app.run()

@@ -18,9 +18,16 @@ import { RouterLink, RouterView } from 'vue-router'
 @import '@/assets/base.css';
 
 .topbar {
-  left: 50%;
+  /* left: 50%; */
   font-size: 15px;
   margin-bottom: 1rem;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: row;
+  align-items: center;
 }
 
 .home {

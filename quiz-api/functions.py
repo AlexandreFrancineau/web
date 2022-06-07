@@ -2,15 +2,18 @@ from numbers import Number
 from flask import Flask, request
 from answers import Answer
 import jwt_utils
-from mapping import questionToJson,jsonToQuestion
+from mapping import jsonToParticipant, participantToJson, questionToJson,jsonToQuestion
 import dbmanagement
+from participants import Participant
 
 def hello_world():
 	x = 'world'
 	return f"Hello, {x}"
 
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+    score = dbmanagement.GetScore()
+    n = dbmanagement.NumberOfQuestion()
+    return {"size": n,"scores": score},200
 
 def login():
 	password = "Vive l'ESIEE !"
@@ -31,9 +34,6 @@ def PostQuestion():
             question = jsonToQuestion(payload)
             dbmanagement.insertQuestion(question)
             answers = payload['possibleAnswers']
-            # for id, a in enumerate(answers):
-            #     if isinstance(answers[a], str):
-            #         answers[a] = answers[a].replace("'", "''")
             for answ in answers:
                 answ= Answer(answ["text"],answ["isCorrect"],question.id)
                 dbmanagement.insertAnswers(answ)
@@ -46,16 +46,18 @@ def PostQuestion():
         return {"message":"le try a échoué","error":"401"},401
 
 def DelQuestion(position):
-    # try:
-    if request.headers.get('Authorization'):
-        
-        id = dbmanagement.deleteQuestion(position)
-        dbmanagement.deleteAnswer(id)
-        return {"message":"la question a été supprimé"},204
-    else:
-        return{"message":"la suppression de la question a échoué","error":"401"},401
-    # except:
-    #     return{"message":"le try a échoué","error":"401"},401
+    try:
+        if request.headers.get('Authorization'):
+            question = dbmanagement.getQuestion(position)
+            if(question is None):
+                return {"message":" la question n'existe pas "},404
+            id = dbmanagement.deleteQuestion(position)
+            dbmanagement.deleteAnswer(id)
+            return {"message":"la question a été supprimé"},204
+        else:
+            return{"message":"la suppression de la question a échoué","error":"401"},401
+    except:
+        return{"message":"le try a échoué","error":"401"},401
 
 def GetQuestion(position):
     try:
@@ -70,6 +72,8 @@ def UpdateQuestion(position):
     try:
         if request.headers.get('Authorization'):
             question = dbmanagement.getQuestion(position)
+            if(question is None):
+                return {"message":" la question n'existe pas"},404
             payload=request.get_json()
             question = jsonToQuestion(payload)
             dbmanagement.updateQuestion(position,question,len(payload['possibleAnswers']))
@@ -81,4 +85,44 @@ def UpdateQuestion(position):
         return{"message":"try a échoué"},401
 
 def GetNumberOfQuestion():
-    return str(dbmanagement.NumberOfQuestion()),200
+    try:
+        return str(dbmanagement.NumberOfQuestion()),200
+    except:
+        return {"message":"try a échoué"},401
+
+def PostParticipants():
+    # try:
+    payload= request.get_json()
+    tabGoodAnswer=dbmanagement.GetGoodAnswer()
+    participant = jsonToParticipant(payload)
+    if len(participant.answers) != int(GetNumberOfQuestion()[0]):
+        print("number of participant answers :" + str(len(participant.answers)))
+        print("number of question : "+ str(GetNumberOfQuestion()[0]))
+        return {"message":"wrong number of answers","error":"400"},400
+    # participant.score = 0
+    print(" __________________________")
+    print( tabGoodAnswer)
+    for i in range (len(tabGoodAnswer)):
+        if tabGoodAnswer[i] == participant.answers[i]:
+            participant.score += 1
+    print(" __________________________")
+    print(participant.score)
+    participants = dbmanagement.InsertParticipants(participant)
+    return participantToJson(participants),200
+
+    # except:
+    #     return{"message": "try a échoué", "error": "401"},401
+
+def DelAllParticipants ():
+    try:
+        n = dbmanagement.numberOfParticipants()
+        if n==0:
+            return{"message":"il n'y a pas de participants"},204
+        else:
+            dbmanagement.DeleteAllParticipants()
+            return {"message": " participants ont été supprimé"},204
+    except:
+        return{"message": "try a échoué", "error": "401"},401
+
+
+

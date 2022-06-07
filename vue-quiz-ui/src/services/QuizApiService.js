@@ -28,12 +28,15 @@ export default {
       });
   },
   getQuizInfo() {
-    return this.call("get", "quiz-info");
+    return this.call("get", "/quiz-info");
   },
   getQuestion(position) {
     return this.call("get","/questions/"+ position);
   },
   getNumberOfQuestion(){
     return this.call("get","/getNumberOfQuestion");
-  }
-};
+  },
+  postParticipants(json){
+    return this.call("post","/participations");
+  },
+}
