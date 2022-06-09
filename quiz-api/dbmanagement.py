@@ -23,7 +23,7 @@ import participants
 #in case of exception, roolback the transaction
 # cur.execute('rollback')
 def insertQuestion(question: questions.Question):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
     cur.execute("begin")
@@ -49,7 +49,7 @@ def insertQuestion(question: questions.Question):
     question.id = cur.lastrowid
 
 def insertAnswers(answers: answers.Answer ):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
     answers.text = answers.text.replace("'", "''")
@@ -63,7 +63,7 @@ def insertAnswers(answers: answers.Answer ):
     
 
 def deleteQuestion(position):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
     cur.execute("begin")
@@ -79,7 +79,7 @@ def deleteQuestion(position):
     return idq
 
 def deleteAnswer(questionId):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
     cur.execute("begin")
@@ -88,7 +88,7 @@ def deleteAnswer(questionId):
     cur.execute("commit")
 
 def getQuestion(position):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
 
@@ -112,7 +112,7 @@ def getQuestion(position):
     return question
 
 def updateQuestion(position,questionUpdated: questions.Question,length):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur =db_connection.cursor()
     cur.execute("begin")
@@ -168,7 +168,7 @@ def updateQuestion(position,questionUpdated: questions.Question,length):
     
 
 def NumberOfQuestion():
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur = db_connection.cursor()
 
@@ -185,7 +185,7 @@ def NumberOfQuestion():
         raise RuntimeError(str(e))
 
 def InsertParticipants(participant: participants.Participant):
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur = db_connection.cursor()
     cur.execute("begin")
@@ -208,7 +208,7 @@ def InsertParticipants(participant: participants.Participant):
 
     
 def GetGoodAnswer():
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur = db_connection.cursor()
     cur.execute("begin")
@@ -225,7 +225,7 @@ def GetGoodAnswer():
     return goodAnswerTab
 
 def DeleteAllParticipants():
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur = db_connection.cursor()
     cur.execute("begin")
@@ -236,7 +236,7 @@ def DeleteAllParticipants():
     db_connection.close()
 
 def GetScore():
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur = db_connection.cursor()
     cur.execute("begin")
@@ -254,7 +254,7 @@ def GetScore():
     return jsonScore
 
 def numberOfParticipants():
-    db_connection = sqlite3.connect("C:\\Users\\alexa\\Desktop\\web\\quiz-api\\db1.db")
+    db_connection = sqlite3.connect("db1.db")
     db_connection.isolation_level = None
     cur = db_connection.cursor()
 
